@@ -2,7 +2,7 @@
 
 Minimal example to reproduce bug in Qt 5.6.0 when exiting a QApplication with several QOpenGLWidget on different screens.
 
-When closing all widgets manually, the application exits and a seg fault occurs with the following backtrace:
+On Ubuntu 14.04, when closing all widgets manually, the application exits and a seg fault occurs with the following backtrace:
 
 #0  0x00007ffff70e9a80 in QObject::thread() const ()
    from /home/micha/Projects/Qt/5.6/gcc_64/lib/libQt5Core.so.5
@@ -43,4 +43,43 @@ When closing all widgets manually, the application exits and a seg fault occurs 
 #18 0x00007ffff76bbfd4 in QApplication::~QApplication() ()
    from /home/micha/Projects/Qt/5.6/gcc_64/lib/libQt5Widgets.so.5
 #19 0x0000000000400d2f in main (argc=1, argv=0x7fffffffe2a8) at main.cpp:16
+
+Also happens on MacOSX El Capitan:
+
+    __TEXT                 000000010aa24000-000000010aa27000 [   12K]
+r-x/rwx SM=COW  /Users/USER/*/qt5bug.app/Contents/MacOS/qt5bug
+
+Thread 0 Crashed:: Dispatch queue: com.apple.main-thread
+0   org.qt-project.QtCore         	0x000000010b9ab2f4 QObject::thread()
+const + 4
+1   org.qt-project.QtGui          	0x000000010b1a6c11
+QOffscreenSurface::create() + 113
+2   org.qt-project.QtGui          	0x000000010b1a6ffb
+QOffscreenSurface::setScreen(QScreen*) + 299
+3   org.qt-project.QtCore         	0x000000010b9b35bd
+QMetaObject::activate(QObject*, int, int, void**) + 749
+4   org.qt-project.QtCore         	0x000000010b9ab67f
+QObject::~QObject() + 271
+5   org.qt-project.QtGui          	0x000000010b1c6507
+QScreen::~QScreen() + 679
+6   org.qt-project.QtGui          	0x000000010b1c654e
+QScreen::~QScreen() + 14
+7   org.qt-project.QtGui          	0x000000010b1850eb
+QPlatformIntegration::destroyScreen(QPlatformScreen*) + 43
+8   libqcocoa.dylib               	0x000000010eb1c0d1
+QCocoaIntegration::~QCocoaIntegration() + 497
+9   libqcocoa.dylib               	0x000000010eb1c47e
+QCocoaIntegration::~QCocoaIntegration() + 14
+10  org.qt-project.QtGui          	0x000000010b194e01
+QGuiApplicationPrivate::~QGuiApplicationPrivate() + 417
+11  org.qt-project.QtWidgets      	0x000000010aaa0b8e
+QApplicationPrivate::~QApplicationPrivate() + 14
+12  org.qt-project.QtCore         	0x000000010b9abd71
+QObject::~QObject() + 2049
+13  org.qt-project.QtWidgets      	0x000000010aaa28f0
+QApplication::~QApplication() + 992
+14  com.yourcompany.qt5bug        	0x000000010aa26d05 main + 389
+(main.cpp:22)
+15  com.yourcompany.qt5bug        	0x000000010aa26b74 start + 52
+
 
